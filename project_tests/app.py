@@ -1,8 +1,11 @@
-from flask import Flask, render_template 
+from flask import Flask, request, render_template 
 
 app = Flask(__name__)
 
-
+@app.route("/")
+def gome():
+    message = "welcome to Flask App, nya~!"
+    return render_template("index.html", greeting = message)
 
 
 
