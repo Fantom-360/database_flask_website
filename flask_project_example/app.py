@@ -2,8 +2,6 @@ from flask import Flask, render_template, session
 
 app = Flask(__name__)
 @app.route('/')
-def rerout():
-    return Flask.redirect('home')
 
 @app.route("/home")
 def home():
@@ -20,18 +18,6 @@ def sing():
 @app.route("/log_in")
 def login():
     return render_template("index3.html")
-
-
-
-
-
-
-
-
-
-
-
-
 
 if __name__ == "__main__":
     app.run(debug=True)

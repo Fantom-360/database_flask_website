@@ -39,7 +39,7 @@ body {
 
 .hamburger div {
     width: 30px;               /* Width of each line */
-    height: 3px;               /* Thickness of each line */
+    height: 3.5px;            /* Thickness of each line */
     background-color: white;   /* White lines */
     margin: 3px;          /* Space between lines */
 }
