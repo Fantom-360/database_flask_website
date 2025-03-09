@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Books</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+    <link rel="script" type="text/script" href="{{ url_for('scripts', filename='mainscr.js') }}">
 </head>
 <body>
     <div class="frontbar">
@@ -28,5 +29,25 @@
         menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
     }
 </script>
+{% for book in books %}
+<div class="book" onclick="showBookDetails({{ book.id }})">
+    <h3>{{ book.title }}</h3>
+    <p>{{ book.author }}</p>
+    {% if book.is_borrowed %}
+        <p style="color: red">Borrowed</p>
+        {% else %}
+            <p style="color: green">Availavle</p>
+        {% endif %}
+</div>
+{% endfor %}
+<div id="bookPopup" class="popup">
+    <div class="popup-content">
+        <h2 ></h2>
+    </div>
+</div>
+
+
+
+
 </body>
 </html>

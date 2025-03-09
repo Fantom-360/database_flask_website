@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from flask import Flask, render_template, request, redirect, flash, session, url_for
+from flask import Flask, render_template, request, redirect, flash, session, url_for, jsonify
 import hashlib
 import mysql.connector
 
@@ -134,8 +134,27 @@ def home():
     return render_template("index0.html")
 
 @app.route("/books")
-def supp():
-    return render_template("index1.html")
+def books():
+    cursor = mydb.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM books")
+    books = cursor.fetchall()
+    cursor.close()
+    return render_template("index1.html", books=books)
+
+@app.route('/book/<int:book_id>')
+def book_details(book_id):
+    cursor = mydb.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM books WHERE id = %d")
+    book = cursor.fetchone()
+    cursor.close()
+    return jsonify(book)
+
+
+
+
+
+
+
 
 @app.route("/sign_up")
 def sing():
