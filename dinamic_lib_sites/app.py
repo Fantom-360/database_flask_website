@@ -48,9 +48,6 @@ def borrow_book(book_id):
         return redirect(url_for("home"))
     
     user_id = session["user_id"]
-
-
-
     cursor = mydb.cursor(dictionary=True)
     cursor.execute("SELECT available FROM books WHERE id = %s", (book_id))
     book = cursor.fetchone()
@@ -58,33 +55,25 @@ def borrow_book(book_id):
     if not book or book["available"] == 0:
         flash("Book is already borrowed!", "error")
         return redirect(url_for("home"))
-    
-
     borrow_date = datetime.today().date()
     return_date = borrow_date + timedelta(days=28)
-
-
     cursor.execute(
         "ISERT INTO borrowed_books (user_id, book_id, borrow_date, return_date) VALUES (%s, %s, %s, %s)",
         (user_id, book_id, borrow_date, return_date)
     )
-
     cursor.execute("UPDATE books SET available = 0 WHERE id = %s", (book_id,))
     mydb.commit()
     cursor.close()
-
     flash("Book borrowed successfully!", "success")
     return redirect(url_for("home"))
 
 @app.route('/return_book/<int:book_id>')
 def return_book(book_id):
+
     if "user_id" not in session:
         flash("You need to be logged in", "error")
         return redirect(url_for("login"))
-    
-
     user_id = session["user_id"]
-
     cursor = mydb.cursor()
     cursor.execute(
         "SELECT * FROM borrowd_books WHERE book_id = %s AND user_id = %s",
@@ -95,25 +84,18 @@ def return_book(book_id):
     if not borrowed:
         flash("You haven't borrowed this book!", "error")
         return redirect(url_for("home"))
-    
     cursor.execute("DELETE FROM borrowed_books WHERE book_id = %s AND user_id = %S", (book_id, user_id))
-    
     mydb.commit()
     cursor.close()
-
     flash(flash("Book returned successfully!", "success"))
     return redirect(url_for("home"))
 
-
-
-
-
 @app.route('/login', methods=["GET", "POST"])
 def login():
+
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
-
         cursor = mydb.cursor(dictionary=True)
         query = "SELECT * FROM register WHERE username = %s"
         cursor.execute(query, (username,))
@@ -125,6 +107,7 @@ def login():
             session["username"] = user["username"]
             flash("login succesful!", "success")
             return redirect(url_for("home"))
+        
         else:
             flash("Invalid username or password", "error")
     return render_template("login.html")
@@ -148,13 +131,6 @@ def book_details(book_id):
     book = cursor.fetchone()
     cursor.close()
     return jsonify(book)
-
-
-
-
-
-
-
 
 @app.route("/sign_up")
 def sing():
