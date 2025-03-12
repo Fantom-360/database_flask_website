@@ -58,7 +58,7 @@ def borrow_book(book_id):
     borrow_date = datetime.today().date()
     return_date = borrow_date + timedelta(days=28)
     cursor.execute(
-        "ISERT INTO borrowed_books (user_id, book_id, borrow_date, return_date) VALUES (%s, %s, %s, %s)",
+        "INSERT INTO borrowed_books (user_id, book_id, borrow_date, return_date) VALUES (%s, %s, %s, %s)",
         (user_id, book_id, borrow_date, return_date)
     )
     cursor.execute("UPDATE books SET available = 0 WHERE id = %s", (book_id,))
@@ -118,11 +118,16 @@ def home():
 
 @app.route("/books")
 def books():
+    genre = request.args.get('genre')
     cursor = mydb.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM books")
+    if genre:
+        cursor.execute("SELECT * FROM books WHERE genre = %s", (genre,))
+    else:
+        cursor.execute("SELECT * FROM books")
+
     books = cursor.fetchall()
     cursor.close()
-    return render_template("index1.html", books=books)
+    return jsonify(books)
 
 @app.route('/book/<int:book_id>')
 def book_details(book_id):
@@ -140,9 +145,37 @@ def sing():
 def login():
     return render_template("index3.html")
 
-@app.route('/admin')
-def admin():
-    pass
+@app.route('/admin', methods=['POST', 'GET'])
+def admlog():
+    if request.method == 'POST':
+        password = request.form.get('password')
+        cursor = mydb.cursor()
+        query = "SELECT password FROM register WHERE id = %s"
+        cursor.execute(query, (1,))
+        passwordadm = cursor.fetchone()
+        cursor.close()
+        if password == passwordadm[0]:
+            session['user'] = 'admin'
+            flash("Admin logged in succesfullly", "success")
+            return redirect('/admin/add_book')
+        else:
+            flash("try another password", "error")
+            return redirect('/admin')
+    return render_template("adminlog.html")
+    
 
+
+
+@app.route('/admin/add_book', method=['POST'])
+def add_book():
+    if 'admin' not in session:
+        return jsonify({"error": "Admin login required"})
+
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    flash("You have been logged out.", "info")
+    return redirect('/login')
+    
 if __name__ == "__main__":
     app.run(debug=True)

@@ -20,9 +20,15 @@
     <div class="menu" id="menu">
         <a class="odkaz" href="/home">Home</a>
         <a class="odkaz" href="/books">Books</a>
+        {% if 'user' in session %}
+            <span>Logged in as {{ session['user'] }}</span>
+            <a href="/logout">Logout</a>
+        {% else %}
         <a class="odkaz" href="/sign_up">Sign up</a>
-        <a class="odkaz" href="/log_in">Log in</a>
+        <a class="odkaz" href="/login">Log in</a>
+        {% endif %}
     </div>
+
     <script>
         function toggleMenu() {
             const menu = document.getElementById('menu');

@@ -42,11 +42,33 @@
 {% endfor %}
 <div id="bookPopup" class="popup">
     <div class="popup-content">
-        <h2 ></h2>
+        <h2 id="bookTitle"></h2>
+        <p id="bookAuthor"></p>
+        <p id="bookDesc"></p>
+        <button id="borrowButton" onclick="borrowBook()">Borrow</button>
+        <button onclick="closePopup()">Close</button>
     </div>
 </div>
+<div class="book-carousel">
+    <button class="arrow left" onclick="scrollLeft()">❮</button>
 
+    <div class="book-slider">
+        {% for book in books %}
+        <div class="book-card">
+            <img src="{{ book.image_url }}" alt="{{ book.title }}">
+            <h3>{{ book.title }}</h3>
+            <p>{{ book.author }}</p>
+        </div>
+        {% endfor %}
+    </div>
 
+    <button class="arrow right" onclick="scrollRight()">❯</button>
+</div>
+<div class="genre-bar">
+    {% for genre in genres %}
+    <button class="genre-button" onclick="filterGenre('{{ genre.name }}')">{{ genre.name }}</button>
+    {% endfor %}
+</div>
 
 
 </body>
